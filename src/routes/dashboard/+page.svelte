@@ -1,7 +1,7 @@
 <script>
     let todoList = ['Do the groceries'];
     let currTodo = "";
-    let error = true;
+    let error = false;
 
     function addTodo(){
         error = false;
@@ -9,25 +9,61 @@
             error = true;
         }
         
-        todoList.push(currTodo);
+        todoList = [...todoList, currTodo];
+        currTodo = "";
     }
+
+    function editTodo(index) {
+        let newTodoList = [...todoList].filter((val, i) => {
+            return i != index;
+        });
+
+        currTodo = todoList[index];
+        todoList = newTodoList;
+    }
+
+    function removeTodo(index) {
+        let newTodoList = [...todoList].filter((val, i) => {
+            return i != index;
+        });
+
+        todoList = newTodoList;
+    }
+
 </script>
 
 <div class="mainContainer">
     <div class="headerContainer">
         <h1>Todo list</h1>
-        <button><i class="fa-solid fa-floppy-disk"></i><p>Save</p></button>
+        <div class="headerBtns">
+            <button><i class="fa-solid fa-right-from-bracket"></i><p>Logout</p></button>
+            <button><i class="fa-solid fa-floppy-disk"></i><p>Save</p></button>
+        </div>
     </div>
     <main>
+        {#if todoList.length === 0}
+            <p>
+                You have nothing to do!
+            </p>
+        {/if}
         {#each todoList as todo, index}
             <div class="todo">
-                {index+1}. {todo}
+                <p>
+                    {index+1}. {todo}
+                </p>
+                <div class="actions">
+                    <i on:click={() => editTodo(index)}
+                        on:keydown={() => {}} 
+                    class="fa-regular fa-pen-to-square"></i>
+                    <i  on:click={() => removeTodo(index)}
+                        on:keydown={() => {}} class="fa-regular fa-trash-can"></i>
+                </div>
             </div>
         {/each}
     </main>
-    <div class={"enterTodo " + "errorBorder"}>
+    <div class={"enterTodo " + (error ? "errorBorder" : "")}>
         <input bind:value={currTodo} type="text" placeholder="Enter todo" />
-        <button>ADD</button>
+        <button on:click={addTodo}>ADD</button>
     </div>
 </div>
 
@@ -62,6 +98,12 @@
         cursor: pointer;
     }
 
+    .headerBtns {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
     .headerContainer button i {
         font-size: 1.1rem;
     }
@@ -77,6 +119,29 @@
         flex: 1;
     }
 
+    .todo {
+        border-left: 1px solid cyan;
+        padding: 8px 14px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 1.3rem;
+    }
+
+    .actions i {
+        cursor: pointer;
+    }
+
+    .actions i:hover {
+        color: coral;
+    }
+
     .enterTodo {
         display: flex;
         align-items: stretch;
@@ -85,7 +150,7 @@
         overflow: hidden;
     }
 
-    .errorBoder {
+    .errorBorder {
         border-color: coral !important;
     }
 
