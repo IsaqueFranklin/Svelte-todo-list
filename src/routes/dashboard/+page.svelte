@@ -1,9 +1,15 @@
 <script>
-    import { authHandlers } from "../../store/store";
+    import { doc, setDoc } from "firebase/firestore";
+    import { authHandlers, authStore } from "../../store/store";
+    import { db } from "../../lib/firebase/firebase";
 
-    let todoList = ['Do the groceries'];
+    let todoList = [];
     let currTodo = "";
     let error = false;
+
+    authStore.subscribe(curr => {
+        todoList = curr.data.todos;
+    })
 
     function addTodo(){
         error = false;
@@ -32,14 +38,27 @@
         todoList = newTodoList;
     }
 
+    async function saveTodos(){
+        try {
+            const userRef = doc(db, 'users', $authStore.user.uid);
+            await setDoc(userRef,
+            {
+                todos: todoList,
+            }, { merge: true },
+            );
+        } catch(err) {
+            console.log('There was an error saving your info. ', err)
+        }
+    }
 </script>
 
+{#if !$authStore.loading}
 <div class="mainContainer">
     <div class="headerContainer">
         <h1>Todo list</h1>
         <div class="headerBtns">
             <button on:click={authHandlers.logout}><i class="fa-solid fa-right-from-bracket"></i><p>Logout</p></button>
-            <button><i class="fa-solid fa-floppy-disk"></i><p>Save</p></button>
+            <button on:click={saveTodos}><i class="fa-solid fa-floppy-disk"></i><p>Save</p></button>
         </div>
     </div>
     <main>
@@ -68,6 +87,8 @@
         <button on:click={addTodo}>ADD</button>
     </div>
 </div>
+{/if}
+
 
 <style>
     .mainContainer {
