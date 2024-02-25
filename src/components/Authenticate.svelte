@@ -152,6 +152,9 @@
         padding: 14px 0;
         overflow: hidden;
         font-size: 0.9rem;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
     }
 
     .options > p {
