@@ -2,6 +2,7 @@
     import { doc, setDoc } from "firebase/firestore";
     import { authHandlers, authStore } from "../../store/store";
     import { db } from "../../lib/firebase/firebase";
+    import TodoItem from '../../components/TodoItem.svelte';
 
     let todoList = [];
     let currTodo = "";
@@ -68,18 +69,7 @@
             </p>
         {/if}
         {#each todoList as todo, index}
-            <div class="todo">
-                <p>
-                    {index+1}. {todo}
-                </p>
-                <div class="actions">
-                    <i on:click={() => editTodo(index)}
-                        on:keydown={() => {}} 
-                    class="fa-regular fa-pen-to-square"></i>
-                    <i  on:click={() => removeTodo(index)}
-                        on:keydown={() => {}} class="fa-regular fa-trash-can"></i>
-                </div>
-            </div>
+            <TodoItem todo={todo} index={index} removeTodo={removeTodo} editTodo={editTodo} />
         {/each}
     </main>
     <div class={"enterTodo " + (error ? "errorBorder" : "")}>
@@ -142,29 +132,7 @@
         flex: 1;
     }
 
-    .todo {
-        border-left: 1px solid cyan;
-        padding: 8px 14px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
-
-    .actions {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        font-size: 1.3rem;
-    }
-
-    .actions i {
-        cursor: pointer;
-    }
-
-    .actions i:hover {
-        color: coral;
-    }
-
+    
     .enterTodo {
         display: flex;
         align-items: stretch;

@@ -29,6 +29,7 @@
         } catch (err) {
             console.log('There was an auth error. ', err);
             error = true;
+            authenticating = false;
         }
     }
 
